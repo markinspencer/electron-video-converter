@@ -33,3 +33,21 @@ ipcMain.on('videos:added', (e, videos) => {
     .then(results => mainWindow.webContents.send('metadata:complete', results))
     .catch(console.error);
 });
+
+ipcMain.on('conversion:start', (e, videos) => {
+  _.each(videos, video => {
+    const outputDir = video.path.split(video.name)[0];
+    const outputName = video.name.split('.')[0];
+    const outputPath = `${outputDir}${outputName}.${video.format}`;
+
+    ffmpeg(video.path)
+      .output(outputPath)
+      .on('end', () =>
+        mainWindow.webContents.send('conversion:end', {
+          video,
+          outputPath
+        })
+      )
+      .run();
+  });
+});
