@@ -17,6 +17,14 @@ export const addVideos = videos => dispatch => {
 
 export const convertVideos = () => (dispatch, getState) => {
   ipcRenderer.send('conversion:start', Object.values(getState().videos));
+
+  ipcRenderer.on('conversion:progress', (event, { video, timemark }) => {
+    dispatch({
+      type: VIDEO_PROGRESS,
+      payload: { ...video, timemark }
+    });
+  });
+
   ipcRenderer.on('conversion:end', (e, { video, outputPath }) => {
     dispatch({
       type: VIDEO_COMPLETE,

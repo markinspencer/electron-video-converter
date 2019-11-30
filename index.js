@@ -42,6 +42,9 @@ ipcMain.on('conversion:start', (e, videos) => {
 
     ffmpeg(video.path)
       .output(outputPath)
+      .on('progress', ({ timemark }) => {
+        mainWindow.send('conversion:progress', { video, timemark });
+      })
       .on('end', () =>
         mainWindow.webContents.send('conversion:end', {
           video,
