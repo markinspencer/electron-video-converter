@@ -8,8 +8,6 @@ import {
   VIDEO_COMPLETE
 } from './types';
 
-// TODO: Communicate to MainWindow process that videos
-// have been added and are pending conversion
 export const addVideos = videos => dispatch => {
   ipcRenderer.send('videos:added', videos);
   ipcRenderer.on('metadata:complete', (e, videosWithData) => {
